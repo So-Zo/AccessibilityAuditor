@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { format } from "date-fns";
-import { AccessibilityReportResponse } from "@shared/schema";
+import { AccessibilityReportResponse } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { File, Share } from "lucide-react";
 
@@ -10,13 +10,13 @@ interface ResultsOverviewProps {
 
 export function ResultsOverview({ report }: ResultsOverviewProps) {
   const circleRef = useRef<SVGCircleElement>(null);
-  
+
   useEffect(() => {
     // Animate the score circle on component mount
     if (circleRef.current) {
       const dashArray = 400;
       const dashOffset = dashArray - (dashArray * report.overallScore / 100);
-      
+
       // Small delay for animation effect
       setTimeout(() => {
         if (circleRef.current) {
@@ -25,7 +25,7 @@ export function ResultsOverview({ report }: ResultsOverviewProps) {
       }, 100);
     }
   }, [report.overallScore]);
-  
+
   // Function to determine score description based on overall score
   const getScoreDescription = (score: number): string => {
     if (score >= 90) return "highly accessible";
@@ -34,13 +34,13 @@ export function ResultsOverview({ report }: ResultsOverviewProps) {
     if (score >= 50) return "somewhat accessible";
     return "poorly accessible";
   };
-  
+
   // Determine issues count
   const issuesCount = report.issues.length;
-  
+
   // Format date for display
   const formattedDate = format(new Date(report.date), "MMM d, yyyy");
-  
+
   // Determine color for overall score
   const getScoreColor = (score: number): string => {
     if (score >= 90) return "text-success-500";
@@ -48,7 +48,7 @@ export function ResultsOverview({ report }: ResultsOverviewProps) {
     if (score >= 50) return "text-warning-500";
     return "text-destructive";
   };
-  
+
   // Determine color for category scores
   const getCategoryScoreColor = (score: number): string => {
     if (score >= 90) return "bg-success-500";
@@ -56,16 +56,16 @@ export function ResultsOverview({ report }: ResultsOverviewProps) {
     if (score >= 50) return "bg-warning-500";
     return "bg-destructive";
   };
-  
+
   // Handle export PDF (placeholder)
   const handleExportPDF = () => {
     alert("Export to PDF functionality would be implemented here");
   };
-  
+
   // Handle share report (placeholder)
   const handleShareReport = () => {
     const shareUrl = `${window.location.origin}/report?url=${encodeURIComponent(report.url)}`;
-    
+
     if (navigator.share) {
       navigator.share({
         title: `Accessibility Report for ${report.url}`,
@@ -85,7 +85,7 @@ export function ResultsOverview({ report }: ResultsOverviewProps) {
         });
     }
   };
-  
+
   return (
     <section className="max-w-5xl mx-auto mb-12 w-full px-4">
       <div className="bg-white rounded-xl shadow-md p-6 mb-6">
@@ -97,18 +97,18 @@ export function ResultsOverview({ report }: ResultsOverviewProps) {
               <span className="text-sm ml-2 text-gray-500">{formattedDate}</span>
             </p>
           </div>
-          
+
           <div className="flex mt-4 md:mt-0">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="mr-3"
               onClick={handleExportPDF}
             >
               <File className="h-4 w-4 mr-2" />
               Export PDF
             </Button>
-            
-            <Button 
+
+            <Button
               variant="outline"
               onClick={handleShareReport}
             >
@@ -122,29 +122,29 @@ export function ResultsOverview({ report }: ResultsOverviewProps) {
           {/* Overall score */}
           <div className="flex-1 flex flex-col items-center justify-center p-6 border-b lg:border-b-0 lg:border-r border-gray-200">
             <h3 className="text-lg font-medium text-gray-900 mb-3">Overall Accessibility Score</h3>
-            
+
             <div className="relative w-48 h-48 mb-4">
               <svg className="w-full h-full" viewBox="0 0 160 160">
                 <circle cx="80" cy="80" r="70" fill="none" stroke="#E5E7EB" strokeWidth="12"/>
-                <circle 
+                <circle
                   ref={circleRef}
-                  className="progress-ring__circle" 
-                  cx="80" 
-                  cy="80" 
-                  r="70" 
-                  fill="none" 
-                  stroke="currentColor" 
+                  className="progress-ring__circle"
+                  cx="80"
+                  cy="80"
+                  r="70"
+                  fill="none"
+                  stroke="currentColor"
                   strokeWidth="12"
                   strokeDasharray="400"
                   strokeDashoffset="400"
                   className={getScoreColor(report.overallScore)}
                 />
-                <text 
-                  x="80" 
-                  y="85" 
-                  textAnchor="middle" 
-                  fontSize="32" 
-                  fontWeight="bold" 
+                <text
+                  x="80"
+                  y="85"
+                  textAnchor="middle"
+                  fontSize="32"
+                  fontWeight="bold"
                   fill="currentColor"
                   className={getScoreColor(report.overallScore)}
                 >
@@ -152,7 +152,7 @@ export function ResultsOverview({ report }: ResultsOverviewProps) {
                 </text>
               </svg>
             </div>
-            
+
             <div className="text-center">
               <p className="text-sm text-gray-600 mb-2">
                 Your site is <span className="font-medium">{getScoreDescription(report.overallScore)}</span>
@@ -163,11 +163,11 @@ export function ResultsOverview({ report }: ResultsOverviewProps) {
               </div>
             </div>
           </div>
-          
+
           {/* Category scores */}
           <div className="flex-1 p-6">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Category Breakdown</h3>
-            
+
             <div className="space-y-4">
               {/* Screen Reader */}
               <div>
@@ -176,13 +176,13 @@ export function ResultsOverview({ report }: ResultsOverviewProps) {
                   <span className="text-sm font-medium text-gray-900">{report.screenReaderScore}%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className={`h-2 rounded-full ${getCategoryScoreColor(report.screenReaderScore)}`} 
+                  <div
+                    className={`h-2 rounded-full ${getCategoryScoreColor(report.screenReaderScore)}`}
                     style={{ width: `${report.screenReaderScore}%` }}
                   ></div>
                 </div>
               </div>
-              
+
               {/* Keyboard Navigation */}
               <div>
                 <div className="flex justify-between items-center mb-1">
@@ -190,13 +190,13 @@ export function ResultsOverview({ report }: ResultsOverviewProps) {
                   <span className="text-sm font-medium text-gray-900">{report.keyboardScore}%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className={`h-2 rounded-full ${getCategoryScoreColor(report.keyboardScore)}`} 
+                  <div
+                    className={`h-2 rounded-full ${getCategoryScoreColor(report.keyboardScore)}`}
                     style={{ width: `${report.keyboardScore}%` }}
                   ></div>
                 </div>
               </div>
-              
+
               {/* Color Contrast */}
               <div>
                 <div className="flex justify-between items-center mb-1">
@@ -204,13 +204,13 @@ export function ResultsOverview({ report }: ResultsOverviewProps) {
                   <span className="text-sm font-medium text-gray-900">{report.contrastScore}%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className={`h-2 rounded-full ${getCategoryScoreColor(report.contrastScore)}`} 
+                  <div
+                    className={`h-2 rounded-full ${getCategoryScoreColor(report.contrastScore)}`}
                     style={{ width: `${report.contrastScore}%` }}
                   ></div>
                 </div>
               </div>
-              
+
               {/* Text Sizing */}
               <div>
                 <div className="flex justify-between items-center mb-1">
@@ -218,13 +218,13 @@ export function ResultsOverview({ report }: ResultsOverviewProps) {
                   <span className="text-sm font-medium text-gray-900">{report.textSizeScore}%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className={`h-2 rounded-full ${getCategoryScoreColor(report.textSizeScore)}`} 
+                  <div
+                    className={`h-2 rounded-full ${getCategoryScoreColor(report.textSizeScore)}`}
                     style={{ width: `${report.textSizeScore}%` }}
                   ></div>
                 </div>
               </div>
-              
+
               {/* ARIA & Semantics */}
               <div>
                 <div className="flex justify-between items-center mb-1">
@@ -232,8 +232,8 @@ export function ResultsOverview({ report }: ResultsOverviewProps) {
                   <span className="text-sm font-medium text-gray-900">{report.ariaScore}%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className={`h-2 rounded-full ${getCategoryScoreColor(report.ariaScore)}`} 
+                  <div
+                    className={`h-2 rounded-full ${getCategoryScoreColor(report.ariaScore)}`}
                     style={{ width: `${report.ariaScore}%` }}
                   ></div>
                 </div>

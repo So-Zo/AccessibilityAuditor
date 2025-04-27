@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
-import { AccessibilityReportResponse } from "@shared/schema";
 import { Link } from "lucide-react";
+import { mockCheckUrl, AccessibilityReportResponse } from "@/lib/mockData";
 
 interface URLInputProps {
   onAnalysisComplete: (url: string) => void;
@@ -32,20 +32,8 @@ export function URLInput({ onAnalysisComplete, defaultUrl = "" }: URLInputProps)
 
   const { mutate, isPending } = useMutation<AccessibilityReportResponse, Error, string>({
     mutationFn: async (urlToCheck: string) => {
-      const response = await fetch('/api/check', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ url: urlToCheck }),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to analyze URL');
-      }
-      
-      return response.json();
+      // Use the mock data service instead of making an API call
+      return mockCheckUrl(urlToCheck);
     },
     onSuccess: (data) => {
       onAnalysisComplete(url);
@@ -61,17 +49,17 @@ export function URLInput({ onAnalysisComplete, defaultUrl = "" }: URLInputProps)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!url.trim()) {
       setError("Please enter a URL");
       return;
     }
-    
+
     if (!validateURL(url)) {
       setError("Please enter a valid URL starting with http:// or https://");
       return;
     }
-    
+
     mutate(url);
   };
 
@@ -87,7 +75,7 @@ export function URLInput({ onAnalysisComplete, defaultUrl = "" }: URLInputProps)
         <p className="text-gray-600 mb-6">
           Enter a URL to check the accessibility performance of any website. Get detailed feedback and recommendations for improvement.
         </p>
-        
+
         <form onSubmit={handleSubmit} className="mb-4">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-grow relative">
@@ -110,7 +98,7 @@ export function URLInput({ onAnalysisComplete, defaultUrl = "" }: URLInputProps)
                 </div>
               )}
             </div>
-            <Button 
+            <Button
               type="submit"
               className="min-w-[140px]"
               disabled={isPending}
@@ -127,25 +115,25 @@ export function URLInput({ onAnalysisComplete, defaultUrl = "" }: URLInputProps)
             </Button>
           </div>
         </form>
-        
+
         <div className="flex flex-wrap items-center text-sm text-gray-600">
           <span className="mr-4 mb-2">Try examples:</span>
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={() => handleExampleClick("https://example.com")}
             className="mb-2 mr-3 px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full"
           >
             example.com
           </button>
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={() => handleExampleClick("https://wikipedia.org")}
             className="mb-2 mr-3 px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full"
           >
             wikipedia.org
           </button>
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={() => handleExampleClick("https://news.ycombinator.com")}
             className="mb-2 px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full"
           >

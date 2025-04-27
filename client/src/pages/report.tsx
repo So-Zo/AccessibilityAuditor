@@ -6,39 +6,28 @@ import { DetailedResults } from "@/components/detailed-results";
 import { RecommendationSummary } from "@/components/recommendation-summary";
 import { URLInput } from "@/components/url-input";
 import { useToast } from "@/hooks/use-toast";
-import { AccessibilityReportResponse } from "@shared/schema";
+import { AccessibilityReportResponse, mockCheckUrl } from "@/lib/mockData";
 
 export default function Report() {
   const [location, navigate] = useLocation();
   const { toast } = useToast();
-  
+
   // Get the URL from the query parameters
   const params = new URLSearchParams(window.location.search);
   const url = params.get("url");
-  
-  // Query to fetch the report
-  const { 
-    data: report, 
-    isLoading, 
-    isError, 
-    error 
+
+  // Query to fetch the report using mock data
+  const {
+    data: report,
+    isLoading,
+    isError,
+    error
   } = useQuery<AccessibilityReportResponse>({
-    queryKey: ['/api/check', url],
+    queryKey: ['mockCheck', url],
     enabled: !!url,
     queryFn: async () => {
-      const response = await fetch('/api/check', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ url }),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch accessibility report');
-      }
-      
-      return response.json();
+      if (!url) throw new Error('URL is required');
+      return mockCheckUrl(url);
     }
   });
 

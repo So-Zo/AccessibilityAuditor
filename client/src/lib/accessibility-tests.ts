@@ -1,4 +1,4 @@
-import { Issue, TestResult, Recommendation } from "@shared/schema";
+import { Issue, TestResult, Recommendation } from "@/lib/types";
 
 // Define categories for accessibility tests
 export type AccessibilityCategory = 'screenReader' | 'keyboard' | 'contrast' | 'textSize' | 'aria';
@@ -30,7 +30,7 @@ export const ruleToCategory: Record<string, AccessibilityCategory> = {
   'table-fake-caption': 'screenReader',
   'td-has-header': 'screenReader',
   'th-has-data-cells': 'screenReader',
-  
+
   // Keyboard navigation related rules
   'accesskeys': 'keyboard',
   'tabindex': 'keyboard',
@@ -39,16 +39,16 @@ export const ruleToCategory: Record<string, AccessibilityCategory> = {
   'bypass': 'keyboard',
   'region': 'keyboard',
   'skip-link': 'keyboard',
-  
+
   // Color contrast related rules
   'color-contrast': 'contrast',
   'link-in-text-block': 'contrast',
-  
+
   // Text size related rules
   'meta-viewport-large': 'textSize',
   'zoom-resize': 'textSize',
   'avoid-inline-spacing': 'textSize',
-  
+
   // ARIA and semantics related rules
   'aria-allowed-attr': 'aria',
   'aria-hidden-body': 'aria',
@@ -112,12 +112,12 @@ export function getCategoryDisplayName(category: AccessibilityCategory): string 
 export function generateRecommendations(issues: Issue[]): Recommendation[] {
   const recommendations: Recommendation[] = [];
   const seenIssueTypes = new Set<string>();
-  
+
   // Group issues by impact and type
   const criticalIssues = issues.filter(i => i.impact === 'critical');
   const seriousIssues = issues.filter(i => i.impact === 'serious');
   const moderateIssues = issues.filter(i => i.impact === 'moderate');
-  
+
   // Add recommendations for critical issues first
   for (const issue of criticalIssues) {
     // Avoid duplicate recommendations for the same issue type
@@ -130,7 +130,7 @@ export function generateRecommendations(issues: Issue[]): Recommendation[] {
       seenIssueTypes.add(issue.name);
     }
   }
-  
+
   // Then add recommendations for serious issues
   for (const issue of seriousIssues) {
     if (!seenIssueTypes.has(issue.name)) {
@@ -142,7 +142,7 @@ export function generateRecommendations(issues: Issue[]): Recommendation[] {
       seenIssueTypes.add(issue.name);
     }
   }
-  
+
   // Then add recommendations for moderate issues
   for (const issue of moderateIssues) {
     if (!seenIssueTypes.has(issue.name)) {
@@ -154,7 +154,7 @@ export function generateRecommendations(issues: Issue[]): Recommendation[] {
       seenIssueTypes.add(issue.name);
     }
   }
-  
+
   // Group similar recommendations by category
   const categoryRecommendations: Record<string, string[]> = {
     'screenReader': [],
@@ -163,7 +163,7 @@ export function generateRecommendations(issues: Issue[]): Recommendation[] {
     'textSize': [],
     'aria': []
   };
-  
+
   // Add generic recommendations based on issue categories
   for (const issue of issues) {
     if (issue.category === 'screenReader' && !categoryRecommendations.screenReader.includes('Add alt text to images')) {
@@ -182,7 +182,7 @@ export function generateRecommendations(issues: Issue[]): Recommendation[] {
       categoryRecommendations.aria.push('Add ARIA landmarks');
     }
   }
-  
+
   // Add category-specific recommendations
   Object.entries(categoryRecommendations).forEach(([category, recList]) => {
     recList.forEach(text => {
@@ -195,20 +195,20 @@ export function generateRecommendations(issues: Issue[]): Recommendation[] {
       }
     });
   });
-  
+
   return recommendations;
 }
 
 // Calculate score based on test results
 export function calculateScore(tests: TestResult[], category?: AccessibilityCategory): number {
-  const filteredTests = category 
+  const filteredTests = category
     ? tests.filter(test => test.category === category)
     : tests;
-    
+
   if (filteredTests.length === 0) {
     return 100; // Perfect score if no tests
   }
-  
+
   const passedCount = filteredTests.filter(test => test.status === 'passed').length;
   return Math.round((passedCount / filteredTests.length) * 100);
 }

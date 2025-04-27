@@ -1,10 +1,10 @@
 import React from "react";
-import { AccessibilityReportResponse, Recommendation } from "@shared/schema";
-import { 
-  FileText, 
-  BookOpen, 
-  Drill, 
-  ExternalLink 
+import { AccessibilityReportResponse, Recommendation } from "@/lib/types";
+import {
+  FileText,
+  BookOpen,
+  Drill,
+  ExternalLink
 } from "lucide-react";
 
 interface RecommendationSummaryProps {
@@ -16,7 +16,7 @@ export function RecommendationSummary({ report }: RecommendationSummaryProps) {
   const highPriorityRecs = report.recommendations.filter(rec => rec.priority === 'high');
   const mediumPriorityRecs = report.recommendations.filter(rec => rec.priority === 'medium');
   const lowPriorityRecs = report.recommendations.filter(rec => rec.priority === 'low');
-  
+
   return (
     <section className="max-w-5xl mx-auto mb-12 w-full px-4">
       <div className="bg-white rounded-xl shadow-md p-6">
@@ -24,7 +24,7 @@ export function RecommendationSummary({ report }: RecommendationSummaryProps) {
         <p className="text-gray-600 mb-6">
           Here are the key actions we recommend to improve your website's accessibility:
         </p>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* High Priority Recommendations */}
           {highPriorityRecs.length > 0 && (
@@ -47,7 +47,7 @@ export function RecommendationSummary({ report }: RecommendationSummaryProps) {
               </ul>
             </div>
           )}
-          
+
           {/* Medium Priority Recommendations */}
           {mediumPriorityRecs.length > 0 && (
             <div className="border border-gray-200 rounded-lg p-5 bg-gray-50">
@@ -69,7 +69,7 @@ export function RecommendationSummary({ report }: RecommendationSummaryProps) {
               </ul>
             </div>
           )}
-          
+
           {/* Low Priority Recommendations - show only if no high/medium recommendations or if they exist */}
           {(lowPriorityRecs.length > 0 && (highPriorityRecs.length === 0 || mediumPriorityRecs.length === 0)) && (
             <div className="border border-gray-200 rounded-lg p-5 bg-gray-50">
@@ -87,13 +87,13 @@ export function RecommendationSummary({ report }: RecommendationSummaryProps) {
             </div>
           )}
         </div>
-        
+
         <div className="mt-8">
           <h4 className="font-medium text-lg mb-4 text-gray-900">Resources</h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <a 
-              href="https://www.w3.org/WAI/standards-guidelines/wcag/" 
-              target="_blank" 
+            <a
+              href="https://www.w3.org/WAI/standards-guidelines/wcag/"
+              target="_blank"
               rel="noopener noreferrer"
               className="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition"
             >
@@ -110,10 +110,10 @@ export function RecommendationSummary({ report }: RecommendationSummaryProps) {
                 </div>
               </div>
             </a>
-            
-            <a 
-              href="https://webaim.org/techniques/alttext/" 
-              target="_blank" 
+
+            <a
+              href="https://webaim.org/techniques/alttext/"
+              target="_blank"
               rel="noopener noreferrer"
               className="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition"
             >
@@ -130,10 +130,10 @@ export function RecommendationSummary({ report }: RecommendationSummaryProps) {
                 </div>
               </div>
             </a>
-            
-            <a 
-              href="https://www.w3.org/WAI/ER/tools/" 
-              target="_blank" 
+
+            <a
+              href="https://www.w3.org/WAI/ER/tools/"
+              target="_blank"
               rel="noopener noreferrer"
               className="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition"
             >
